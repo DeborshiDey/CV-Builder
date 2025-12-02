@@ -1,5 +1,5 @@
-export type TemplateId = "executive" | "modern" | "classic" | "side-header" | "sidebar";
-export type TemplateLayout = "standard" | "sidebar" | "left-header";
+export type TemplateId = "executive" | "modern" | "classic" | "side-header" | "sidebar" | "navy";
+export type TemplateLayout = "standard" | "sidebar" | "left-header" | "timeline-sidebar";
 
 export interface Template {
     id: TemplateId;
@@ -85,6 +85,20 @@ export const templates: Template[] = [
             text: "#1f2937",
             background: "#ffffff",
             headerBackground: "#2563eb", // Blue sidebar
+            headerText: "#ffffff",
+        },
+    },
+    {
+        id: "navy",
+        name: "Navy",
+        description: "Professional timeline design with dark blue sidebar",
+        layout: "timeline-sidebar",
+        colors: {
+            primary: "#003366", // Dark Navy Blue
+            secondary: "#ffffff",
+            text: "#333333",
+            background: "#ffffff",
+            headerBackground: "#003366",
             headerText: "#ffffff",
         },
     },

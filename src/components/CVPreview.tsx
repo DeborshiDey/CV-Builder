@@ -32,6 +32,8 @@ export default function CVPreview({ data }: CVPreviewProps) {
                 return <SidebarLayout data={data} template={template} />;
             case "left-header":
                 return <SideHeaderLayout data={data} template={template} />;
+            case "timeline-sidebar":
+                return <TimelineSidebarLayout data={data} template={template} />;
             case "standard":
             default:
                 return <StandardLayout data={data} template={template} />;
@@ -361,3 +363,150 @@ const SkillsSection = ({ data, template }: { data: CVData; template: Template })
         </section>
     );
 };
+
+const TimelineSidebarLayout = ({ data, template }: { data: CVData; template: Template }) => (
+    <div className="flex min-h-[800px]">
+        {/* Left Sidebar */}
+        <div
+            className="w-1/3 p-6 space-y-6 text-white"
+            style={{ backgroundColor: template.colors.headerBackground || template.colors.primary }}
+        >
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold leading-tight mb-2">
+                    {data.personalInfo.fullName || "Your Name"}
+                </h1>
+                {data.personalInfo.professionalTitle && (
+                    <p className="text-lg opacity-90">{data.personalInfo.professionalTitle}</p>
+                )}
+            </div>
+
+            <div className="space-y-4">
+                <h3 className="font-bold uppercase text-sm tracking-wider border-b border-white/30 pb-1">Personal Info</h3>
+                <div className="space-y-3 text-sm opacity-90">
+                    {data.personalInfo.phone && (
+                        <div>
+                            <div className="font-semibold text-xs opacity-70">Phone</div>
+                            <div>{data.personalInfo.phone}</div>
+                        </div>
+                    )}
+                    {data.personalInfo.email && (
+                        <div>
+                            <div className="font-semibold text-xs opacity-70">E-mail</div>
+                            <div className="break-words">{data.personalInfo.email}</div>
+                        </div>
+                    )}
+                    {data.personalInfo.linkedin && (
+                        <div>
+                            <div className="font-semibold text-xs opacity-70">LinkedIn</div>
+                            <div className="break-words">{data.personalInfo.linkedin}</div>
+                        </div>
+                    )}
+                    {data.personalInfo.website && (
+                        <div>
+                            <div className="font-semibold text-xs opacity-70">Website</div>
+                            <div className="break-words">{data.personalInfo.website}</div>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Skills in Sidebar */}
+            {(data.hardSkills?.length > 0 || data.softSkills?.length > 0 || data.skills?.length > 0) && (
+                <div className="space-y-4 pt-4">
+                    <h3 className="font-bold uppercase text-sm tracking-wider border-b border-white/30 pb-1">Skills</h3>
+
+                    {data.hardSkills && data.hardSkills.length > 0 && (
+                        <div className="space-y-2">
+                            {data.hardSkills.map((skill, i) => (
+                                <div key={i}>
+                                    <div className="text-sm mb-1">{skill}</div>
+                                    <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                                        <div className="h-full bg-white w-3/4"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {data.softSkills && data.softSkills.length > 0 && (
+                        <div className="space-y-2 mt-4">
+                            {data.softSkills.map((skill, i) => (
+                                <div key={i}>
+                                    <div className="text-sm mb-1">{skill}</div>
+                                    <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                                        <div className="h-full bg-white w-3/4"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {(!data.hardSkills?.length && !data.softSkills?.length && data.skills?.length > 0) && (
+                        <div className="space-y-2">
+                            {data.skills.map((skill, i) => (
+                                <div key={i}>
+                                    <div className="text-sm mb-1">{skill}</div>
+                                    <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                                        <div className="h-full bg-white w-3/4"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+
+        {/* Right Content */}
+        <div className="w-2/3 p-8 space-y-8 bg-white text-gray-800">
+            {data.personalInfo.summary && (
+                <div className="text-sm leading-relaxed">
+                    {data.personalInfo.summary}
+                </div>
+            )}
+
+            {data.experience.length > 0 && (
+                <section>
+                    <h2 className="text-xl font-bold uppercase text-blue-900 border-b border-gray-300 pb-2 mb-4" style={{ color: template.colors.primary }}>
+                        Experience
+                    </h2>
+                    <div className="space-y-6">
+                        {data.experience.map((exp) => (
+                            <div key={exp.id} className="flex gap-4">
+                                <div className="w-24 flex-shrink-0 text-sm font-semibold text-gray-600 pt-1">
+                                    {exp.startDate} - <br /> {exp.endDate || "Present"}
+                                </div>
+                                <div className="flex-grow">
+                                    <h3 className="font-bold text-lg text-gray-900">{exp.position}</h3>
+                                    <div className="text-sm italic text-gray-600 mb-2">{exp.company}</div>
+                                    <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{exp.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {data.education.length > 0 && (
+                <section>
+                    <h2 className="text-xl font-bold uppercase text-blue-900 border-b border-gray-300 pb-2 mb-4" style={{ color: template.colors.primary }}>
+                        Education
+                    </h2>
+                    <div className="space-y-4">
+                        {data.education.map((edu) => (
+                            <div key={edu.id} className="flex gap-4">
+                                <div className="w-24 flex-shrink-0 text-sm font-semibold text-gray-600 pt-1">
+                                    {edu.startDate}
+                                </div>
+                                <div className="flex-grow">
+                                    <h3 className="font-bold text-lg text-gray-900">{edu.degree}</h3>
+                                    <div className="text-sm text-gray-700">{edu.school}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+        </div>
+    </div>
+);

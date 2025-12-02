@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         textTransform: "uppercase",
-        marginBottom: 5,
+        marginBottom: 10,
     },
     title: {
         fontSize: 14,
@@ -163,6 +163,103 @@ const styles = StyleSheet.create({
         textTransform: "uppercase",
         textAlign: "right",
     },
+
+
+    // Timeline Sidebar Layout Styles
+    timelineSidebarLeft: {
+        width: "35%",
+        padding: 20,
+        color: "white",
+        height: "100%",
+    },
+    timelineSidebarRight: {
+        width: "65%",
+        padding: 20,
+        backgroundColor: "white",
+    },
+    timelineName: {
+        fontSize: 28,
+        fontWeight: "bold",
+        marginBottom: 5,
+        color: "white",
+        lineHeight: 1.1,
+    },
+    timelineTitle: {
+        fontSize: 14,
+        marginBottom: 20,
+        color: "rgba(255,255,255,0.9)",
+    },
+    timelineSectionTitle: {
+        fontSize: 12,
+        fontWeight: "bold",
+        textTransform: "uppercase",
+        marginBottom: 8,
+        color: "white",
+        borderBottomWidth: 1,
+        borderBottomColor: "rgba(255,255,255,0.3)",
+        paddingBottom: 2,
+        marginTop: 15,
+    },
+    timelineContactLabel: {
+        fontSize: 8,
+        fontWeight: "bold",
+        opacity: 0.7,
+        marginBottom: 1,
+    },
+    timelineContactValue: {
+        fontSize: 9,
+        marginBottom: 8,
+    },
+    timelineRightSectionTitle: {
+        fontSize: 14,
+        fontWeight: "bold",
+        textTransform: "uppercase",
+        marginBottom: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#ccc",
+        paddingBottom: 4,
+        marginTop: 10,
+    },
+    timelineRow: {
+        flexDirection: "row",
+        marginBottom: 10,
+    },
+    timelineDateCol: {
+        width: "20%",
+        paddingRight: 10,
+    },
+    timelineContentCol: {
+        width: "80%",
+    },
+    timelineDate: {
+        fontSize: 9,
+        fontWeight: "bold",
+        color: "#555",
+    },
+    timelinePosition: {
+        fontSize: 11,
+        fontWeight: "bold",
+        marginBottom: 2,
+    },
+    timelineCompany: {
+        fontSize: 9,
+        fontStyle: "italic",
+        marginBottom: 2,
+        color: "#444",
+    },
+    progressBarContainer: {
+        height: 4,
+        backgroundColor: "rgba(255,255,255,0.2)",
+        borderRadius: 2,
+        marginTop: 2,
+        marginBottom: 8,
+    },
+    progressBarFill: {
+        height: "100%",
+        backgroundColor: "white",
+        width: "75%", // Default width
+        borderRadius: 2,
+    },
 });
 
 interface PDFDocumentProps {
@@ -178,6 +275,8 @@ export default function PDFDocument({ data }: PDFDocumentProps) {
                 return <SidebarLayout data={data} template={template} />;
             case "left-header":
                 return <SideHeaderLayout data={data} template={template} />;
+            case "timeline-sidebar":
+                return <TimelineSidebarLayout data={data} template={template} />;
             case "standard":
             default:
                 return <StandardLayout data={data} template={template} />;
@@ -371,6 +470,120 @@ const SideHeaderLayout = ({ data, template }: { data: CVData; template: Template
                                 ))}
                             </View>
                         </View>
+                    </View>
+                )}
+            </View>
+        </View>
+    );
+};
+
+const TimelineSidebarLayout = ({ data, template }: { data: CVData; template: Template }) => {
+    const dynamicStyles = StyleSheet.create({
+        left: { backgroundColor: template.colors.headerBackground || template.colors.primary },
+        sectionTitle: { color: template.colors.primary, borderBottomColor: "#ccc" },
+    });
+
+    return (
+        <View style={styles.sidebarContainer}>
+            {/* Left Sidebar */}
+            <View style={[styles.timelineSidebarLeft, dynamicStyles.left]}>
+                <View style={{ marginBottom: 10 }}>
+                    <Text style={styles.timelineName}>{data.personalInfo.fullName}</Text>
+                    {data.personalInfo.professionalTitle && (
+                        <Text style={styles.timelineTitle}>{data.personalInfo.professionalTitle}</Text>
+                    )}
+                </View>
+
+                <Text style={styles.timelineSectionTitle}>Personal Info</Text>
+                <View>
+                    {data.personalInfo.phone && (
+                        <View>
+                            <Text style={styles.timelineContactLabel}>Phone</Text>
+                            <Text style={styles.timelineContactValue}>{data.personalInfo.phone}</Text>
+                        </View>
+                    )}
+                    {data.personalInfo.email && (
+                        <View>
+                            <Text style={styles.timelineContactLabel}>E-mail</Text>
+                            <Text style={styles.timelineContactValue}>{data.personalInfo.email}</Text>
+                        </View>
+                    )}
+                    {data.personalInfo.linkedin && (
+                        <View>
+                            <Text style={styles.timelineContactLabel}>LinkedIn</Text>
+                            <Text style={styles.timelineContactValue}>{data.personalInfo.linkedin}</Text>
+                        </View>
+                    )}
+                    {data.personalInfo.website && (
+                        <View>
+                            <Text style={styles.timelineContactLabel}>Website</Text>
+                            <Text style={styles.timelineContactValue}>{data.personalInfo.website}</Text>
+                        </View>
+                    )}
+                </View>
+
+                {(data.hardSkills?.length > 0 || data.softSkills?.length > 0 || data.skills?.length > 0) && (
+                    <View>
+                        <Text style={styles.timelineSectionTitle}>Skills</Text>
+                        {[...(data.hardSkills || []), ...(data.softSkills || []), ...(data.skills || [])].map((skill, i) => (
+                            <View key={i}>
+                                <Text style={{ fontSize: 9, color: "white" }}>{skill}</Text>
+                                <View style={styles.progressBarContainer}>
+                                    <View style={styles.progressBarFill} />
+                                </View>
+                            </View>
+                        ))}
+                    </View>
+                )}
+            </View>
+
+            {/* Right Content */}
+            <View style={styles.timelineSidebarRight}>
+                {data.personalInfo.summary && (
+                    <View style={{ marginBottom: 15 }}>
+                        <Text style={{ fontSize: 10, lineHeight: 1.4 }}>{data.personalInfo.summary}</Text>
+                    </View>
+                )}
+
+                {data.experience.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={[styles.timelineRightSectionTitle, dynamicStyles.sectionTitle]}>Experience</Text>
+                        {data.experience.map((exp) => (
+                            <View key={exp.id} style={styles.timelineRow}>
+                                <View style={styles.timelineDateCol}>
+                                    <Text style={styles.timelineDate}>
+                                        {exp.startDate} -
+                                    </Text>
+                                    <Text style={styles.timelineDate}>
+                                        {exp.endDate || "Present"}
+                                    </Text>
+                                </View>
+                                <View style={styles.timelineContentCol}>
+                                    <Text style={styles.timelinePosition}>{exp.position}</Text>
+                                    <Text style={styles.timelineCompany}>{exp.company}</Text>
+                                    <Text style={styles.description}>{exp.description}</Text>
+                                </View>
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                {data.education.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={[styles.timelineRightSectionTitle, dynamicStyles.sectionTitle]}>Education</Text>
+                        {data.education.map((edu) => (
+                            <View key={edu.id} style={styles.timelineRow}>
+                                <View style={styles.timelineDateCol}>
+                                    <Text style={styles.timelineDate}>
+                                        {edu.startDate}
+                                    </Text>
+                                </View>
+                                <View style={styles.timelineContentCol}>
+                                    <Text style={styles.timelinePosition}>{edu.degree}</Text>
+                                    <Text style={{ fontSize: 10 }}>{edu.school}</Text>
+                                </View>
+                            </View>
+                        ))}
                     </View>
                 )}
             </View>
