@@ -1,4 +1,4 @@
-const apiKey = "AIzaSyDukj76VtNPm3oqRki6I8ysahvGBWa4JCY";
+const apiKey = "AIzaSyBTbA5v1fekuqwVH46kTUzfRSpSfBEk740";
 const fs = require('fs');
 
 async function listModels() {

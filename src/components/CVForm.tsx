@@ -27,7 +27,7 @@ export default function CVForm({ data, onChange }: CVFormProps) {
     };
 
     const handleArrayChange = (
-        section: "experience" | "education",
+        section: "experience" | "education" | "projects" | "courses",
         index: number,
         field: string,
         value: any
@@ -40,27 +40,45 @@ export default function CVForm({ data, onChange }: CVFormProps) {
         });
     };
 
-    const addItem = (section: "experience" | "education") => {
-        const newItem =
-            section === "experience"
-                ? {
-                    id: crypto.randomUUID(),
-                    company: "",
-                    position: "",
-                    startDate: "",
-                    endDate: "",
-                    current: false,
-                    description: "",
-                }
-                : {
-                    id: crypto.randomUUID(),
-                    school: "",
-                    degree: "",
-                    startDate: "",
-                    endDate: "",
-                    current: false,
-                    description: "", // Added description for education
-                };
+    const addItem = (section: "experience" | "education" | "projects" | "courses") => {
+        let newItem;
+        if (section === "experience") {
+            newItem = {
+                id: crypto.randomUUID(),
+                company: "",
+                position: "",
+                startDate: "",
+                endDate: "",
+                current: false,
+                description: "",
+            };
+        } else if (section === "education") {
+            newItem = {
+                id: crypto.randomUUID(),
+                school: "",
+                degree: "",
+                startDate: "",
+                endDate: "",
+                current: false,
+                description: "",
+            };
+        } else if (section === "courses") {
+            newItem = {
+                id: crypto.randomUUID(),
+                name: "",
+                institution: "",
+                startDate: "",
+                endDate: "",
+                link: "",
+            };
+        } else {
+            newItem = {
+                id: crypto.randomUUID(),
+                name: "",
+                link: "",
+                description: "",
+            };
+        }
 
         onChange({
             ...data,
@@ -68,7 +86,7 @@ export default function CVForm({ data, onChange }: CVFormProps) {
         });
     };
 
-    const removeItem = (section: "experience" | "education", index: number) => {
+    const removeItem = (section: "experience" | "education" | "projects" | "courses", index: number) => {
         const newArray = [...data[section]];
         newArray.splice(index, 1);
         onChange({
@@ -441,6 +459,111 @@ export default function CVForm({ data, onChange }: CVFormProps) {
                                 className="p-2 border rounded w-full text-black placeholder:text-gray-600"
                                 value={edu.endDate}
                                 onChange={(e) => handleArrayChange("education", index, "endDate", e.target.value)}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </section>
+
+            {/* Projects */}
+            <section className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-medium text-black">Projects</h3>
+                    <button
+                        onClick={() => addItem("projects")}
+                        className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                    >
+                        <Plus size={16} /> Add Project
+                    </button>
+                </div>
+                {data.projects.map((project, index) => (
+                    <div key={project.id} className="p-4 border rounded bg-gray-50 space-y-3 relative">
+                        <button
+                            onClick={() => removeItem("projects", index)}
+                            className="absolute top-4 right-4 text-red-500 hover:text-red-700"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <input
+                                type="text"
+                                placeholder="Project Name"
+                                className="p-2 border rounded w-full text-black placeholder:text-gray-600"
+                                value={project.name}
+                                onChange={(e) => handleArrayChange("projects", index, "name", e.target.value)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Link (Optional)"
+                                className="p-2 border rounded w-full text-black placeholder:text-gray-600"
+                                value={project.link}
+                                onChange={(e) => handleArrayChange("projects", index, "link", e.target.value)}
+                            />
+                        </div>
+                        <textarea
+                            placeholder="Description"
+                            className="p-2 border rounded w-full h-32 text-black placeholder:text-gray-600"
+                            value={project.description}
+                            onChange={(e) => handleArrayChange("projects", index, "description", e.target.value)}
+                        />
+                    </div>
+                ))}
+            </section>
+
+            {/* Courses */}
+            <section className="space-y-4">
+                <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-medium text-black">Courses & Certifications</h3>
+                    <button
+                        onClick={() => addItem("courses")}
+                        className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                    >
+                        <Plus size={16} /> Add Course
+                    </button>
+                </div>
+                {data.courses.map((course, index) => (
+                    <div key={course.id} className="p-4 border rounded bg-gray-50 space-y-3 relative">
+                        <button
+                            onClick={() => removeItem("courses", index)}
+                            className="absolute top-4 right-4 text-red-500 hover:text-red-700"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <input
+                                type="text"
+                                placeholder="Course Name"
+                                className="p-2 border rounded w-full text-black placeholder:text-gray-600"
+                                value={course.name}
+                                onChange={(e) => handleArrayChange("courses", index, "name", e.target.value)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Institution / Provider"
+                                className="p-2 border rounded w-full text-black placeholder:text-gray-600"
+                                value={course.institution}
+                                onChange={(e) => handleArrayChange("courses", index, "institution", e.target.value)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Start Date"
+                                className="p-2 border rounded w-full text-black placeholder:text-gray-600"
+                                value={course.startDate}
+                                onChange={(e) => handleArrayChange("courses", index, "startDate", e.target.value)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="End Date"
+                                className="p-2 border rounded w-full text-black placeholder:text-gray-600"
+                                value={course.endDate}
+                                onChange={(e) => handleArrayChange("courses", index, "endDate", e.target.value)}
+                            />
+                            <input
+                                type="text"
+                                placeholder="Certification Link (Optional)"
+                                className="p-2 border rounded w-full text-black placeholder:text-gray-600 md:col-span-2"
+                                value={course.link}
+                                onChange={(e) => handleArrayChange("courses", index, "link", e.target.value)}
                             />
                         </div>
                     </div>

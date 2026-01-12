@@ -17,6 +17,22 @@ export interface Education {
   current: boolean;
 }
 
+export interface Project {
+  id: string;
+  name: string;
+  link?: string;
+  description: string;
+}
+
+export interface Course {
+  id: string;
+  name: string;
+  institution: string;
+  startDate: string;
+  endDate: string;
+  link: string;
+}
+
 export interface CVData {
   personalInfo: {
     fullName: string;
@@ -34,6 +50,8 @@ export interface CVData {
   };
   experience: Experience[];
   education: Education[];
+  projects: Project[];
+  courses: Course[];
   skills: string[]; // Deprecated, kept for backward compatibility
   hardSkills: string[];
   softSkills: string[];
@@ -57,6 +75,8 @@ export const initialCVData: CVData = {
   },
   experience: [],
   education: [],
+  projects: [],
+  courses: [],
   skills: [],
   hardSkills: [],
   softSkills: [],

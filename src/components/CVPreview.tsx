@@ -97,6 +97,8 @@ const StandardLayout = ({ data, template }: { data: CVData; template: Template }
             <SummarySection data={data} template={template} />
             <ExperienceSection data={data} template={template} />
             <EducationSection data={data} template={template} />
+            <ProjectsSection data={data} template={template} />
+            <CoursesSection data={data} template={template} />
             <SkillsSection data={data} template={template} />
         </div>
     </>
@@ -147,6 +149,8 @@ const SidebarLayout = ({ data, template }: { data: CVData; template: Template })
             <SummarySection data={data} template={template} />
             <ExperienceSection data={data} template={template} />
             <EducationSection data={data} template={template} />
+            <ProjectsSection data={data} template={template} />
+            <CoursesSection data={data} template={template} />
         </div>
     </div>
 );
@@ -223,6 +227,63 @@ const SideHeaderLayout = ({ data, template }: { data: CVData; template: Template
                                     </span>
                                 </div>
                                 <div className="text-sm text-gray-700">{edu.degree}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {data.projects && data.projects.length > 0 && (
+                <div className="grid grid-cols-12 gap-4">
+                    <div className="col-span-3">
+                        <h3 className="font-bold uppercase text-sm tracking-wider" style={{ color: template.colors.primary }}>
+                            Projects
+                        </h3>
+                    </div>
+                    <div className="col-span-9 space-y-4">
+                        {data.projects.map((project) => (
+                            <div key={project.id}>
+                                <div className="flex justify-between items-baseline mb-1">
+                                    <h4 className="font-bold text-gray-900">
+                                        {project.name}
+                                        {project.link && (
+                                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-xs text-blue-600 hover:underline font-normal">
+                                                Link
+                                            </a>
+                                        )}
+                                    </h4>
+                                </div>
+                                <p className="text-sm text-gray-700 whitespace-pre-line">{project.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {data.courses && data.courses.length > 0 && (
+                <div className="grid grid-cols-12 gap-4">
+                    <div className="col-span-3">
+                        <h3 className="font-bold uppercase text-sm tracking-wider" style={{ color: template.colors.primary }}>
+                            Courses
+                        </h3>
+                    </div>
+                    <div className="col-span-9 space-y-4">
+                        {data.courses.map((course) => (
+                            <div key={course.id}>
+                                <div className="flex justify-between items-baseline mb-1">
+                                    <h4 className="font-bold text-gray-900">
+                                        {course.name}
+                                        {course.link && (
+                                            <a href={course.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-xs text-blue-600 hover:underline font-normal">
+                                                Cert
+                                            </a>
+                                        )}
+                                    </h4>
+                                    <span className="text-xs text-gray-500 font-medium">
+                                        {course.startDate} - {course.endDate}
+                                    </span>
+                                </div>
+                                <div className="text-sm text-gray-700">{course.institution}</div>
                             </div>
                         ))}
                     </div>
@@ -364,6 +425,65 @@ const SkillsSection = ({ data, template }: { data: CVData; template: Template })
     );
 };
 
+const ProjectsSection = ({ data, template }: { data: CVData; template: Template }) => {
+    if (!data.projects || data.projects.length === 0) return null;
+    return (
+        <section>
+            <h2 className="text-lg font-bold uppercase border-b-2 mb-3" style={{ color: template.colors.primary, borderColor: template.colors.primary }}>
+                Projects
+            </h2>
+            <div className="space-y-4">
+                {data.projects.map((project) => (
+                    <div key={project.id}>
+                        <div className="flex justify-between items-baseline">
+                            <h3 className="font-bold text-black">
+                                {project.name}
+                                {project.link && (
+                                    <a href={project.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-sm text-blue-600 hover:underline font-normal">
+                                        Link
+                                    </a>
+                                )}
+                            </h3>
+                        </div>
+                        <p className="text-sm whitespace-pre-line mt-1">{project.description}</p>
+                    </div>
+                ))}
+            </div>
+        </section>
+    );
+};
+
+const CoursesSection = ({ data, template }: { data: CVData; template: Template }) => {
+    if (!data.courses || data.courses.length === 0) return null;
+    return (
+        <section>
+            <h2 className="text-lg font-bold uppercase border-b-2 mb-3" style={{ color: template.colors.primary, borderColor: template.colors.primary }}>
+                Courses & Certifications
+            </h2>
+            <div className="space-y-3">
+                {data.courses.map((course) => (
+                    <div key={course.id}>
+                        <div className="flex justify-between items-baseline">
+                            <h3 className="font-bold text-black">
+                                {course.name}
+                                {course.link && (
+                                    <a href={course.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-sm text-blue-600 hover:underline font-normal">
+                                        Cert
+                                    </a>
+                                )}
+                            </h3>
+                            <span className="text-sm text-black">
+                                {course.startDate} - {course.endDate}
+                            </span>
+                        </div>
+                        <div className="text-sm text-black">{course.institution}</div>
+                    </div>
+                ))}
+            </div>
+        </section>
+    );
+};
+
 const TimelineSidebarLayout = ({ data, template }: { data: CVData; template: Template }) => (
     <div className="flex min-h-[800px]">
         {/* Left Sidebar */}
@@ -501,6 +621,31 @@ const TimelineSidebarLayout = ({ data, template }: { data: CVData; template: Tem
                                 <div className="flex-grow">
                                     <h3 className="font-bold text-lg text-gray-900">{edu.degree}</h3>
                                     <div className="text-sm text-gray-700">{edu.school}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {data.projects && data.projects.length > 0 && (
+                <section>
+                    <h2 className="text-xl font-bold uppercase text-blue-900 border-b border-gray-300 pb-2 mb-4" style={{ color: template.colors.primary }}>
+                        Projects
+                    </h2>
+                    <div className="space-y-4">
+                        {data.projects.map((project) => (
+                            <div key={project.id} className="flex gap-4">
+                                <div className="flex-grow">
+                                    <h3 className="font-bold text-lg text-gray-900">
+                                        {project.name}
+                                        {project.link && (
+                                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-sm text-blue-600 hover:underline font-normal">
+                                                Link
+                                            </a>
+                                        )}
+                                    </h3>
+                                    <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{project.description}</p>
                                 </div>
                             </div>
                         ))}

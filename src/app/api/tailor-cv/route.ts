@@ -13,7 +13,7 @@ export async function POST(req: Request) {
         }
 
         const { cvData }: { cvData: CVData } = await req.json();
-        const { personalInfo, experience, skills, targetJob } = cvData;
+        const { personalInfo, experience, skills, hardSkills, softSkills, targetJob } = cvData;
 
         if (!targetJob.description) {
             return NextResponse.json(
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = `
       You are an expert CV writer. Your task is to tailor a CV for a specific job description.
@@ -36,12 +36,14 @@ export async function POST(req: Request) {
       CURRENT CV DATA:
       Summary: ${personalInfo.summary}
       Experience: ${JSON.stringify(experience)}
-      Skills: ${skills.join(", ")}
+      Hard Skills: ${hardSkills?.join(", ") || ""}
+      Soft Skills: ${softSkills?.join(", ") || ""}
+      Other Skills: ${skills?.join(", ") || ""}
 
       INSTRUCTIONS:
       1. Rewrite the "Professional Summary" to be impactful and aligned with the target job.
       2. Rewrite the "Description" for each experience item to highlight relevant achievements and keywords from the job description. Keep them concise and action-oriented.
-      3. Suggest a list of "Skills" that are relevant to the job and match the candidate's profile.
+      3. Suggest a list of "Hard Skills" (technical) and "Soft Skills" (interpersonal) that are relevant to the job and match the candidate's profile.
       
       OUTPUT FORMAT:
       Return ONLY a valid JSON object with the following structure:
@@ -50,7 +52,8 @@ export async function POST(req: Request) {
         "experience": [
           { "id": "same_id_as_input", "description": "New description..." }
         ],
-        "skills": ["Skill 1", "Skill 2", ...]
+        "hardSkills": ["Hard Skill 1", "Hard Skill 2", ...],
+        "softSkills": ["Soft Skill 1", "Soft Skill 2", ...]
       }
       Do not include markdown formatting or explanations.
     `;

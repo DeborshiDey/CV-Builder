@@ -109,6 +109,64 @@ export const generateDOC = async (data: CVData): Promise<Blob> => {
                         ]
                         : []),
 
+                    // Projects
+                    ...(data.projects && data.projects.length > 0
+                        ? [
+                            new Paragraph({
+                                text: "PROJECTS",
+                                heading: HeadingLevel.HEADING_2,
+                                spacing: { before: 200, after: 100 },
+                                border: { bottom: { color: "000000", space: 1, style: BorderStyle.SINGLE, size: 6 } },
+                            }),
+                            ...data.projects.flatMap((project) => [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({ text: project.name, bold: true, size: 24 }),
+                                        ...(project.link ? [new TextRun({ text: ` (${project.link})`, size: 20 })] : []),
+                                    ],
+                                }),
+                                new Paragraph({
+                                    text: project.description,
+                                    spacing: { after: 200 },
+                                }),
+                            ]),
+                        ]
+                        : []),
+
+                    // Courses
+                    ...(data.courses && data.courses.length > 0
+                        ? [
+                            new Paragraph({
+                                text: "COURSES & CERTIFICATIONS",
+                                heading: HeadingLevel.HEADING_2,
+                                spacing: { before: 200, after: 100 },
+                                border: { bottom: { color: "000000", space: 1, style: BorderStyle.SINGLE, size: 6 } },
+                            }),
+                            ...data.courses.flatMap((course) => [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({ text: course.name, bold: true, size: 24 }),
+                                        new TextRun({
+                                            text: `\t${course.startDate} - ${course.endDate}`,
+                                            size: 20,
+                                        }),
+                                    ],
+                                    tabStops: [{ type: "right", position: 9000 }],
+                                }),
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: course.institution,
+                                            italics: true,
+                                        }),
+                                        ...(course.link ? [new TextRun({ text: ` (${course.link})`, size: 20 })] : []),
+                                    ],
+                                    spacing: { after: 200 },
+                                }),
+                            ]),
+                        ]
+                        : []),
+
                     // Skills
                     ...(data.skills.length > 0
                         ? [

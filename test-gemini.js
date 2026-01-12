@@ -2,13 +2,13 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require('fs');
 
 async function testGemini() {
-    const apiKey = "AIzaSyDukj76VtNPm3oqRki6I8ysahvGBWa4JCY";
+    const apiKey = "AIzaSyBTbA5v1fekuqwVH46kTUzfRSpSfBEk740";
 
     console.log("Testing Gemini API with gemini-2.0-flash...");
 
     try {
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const prompt = "Write a one-sentence professional summary for a software engineer.";
 
