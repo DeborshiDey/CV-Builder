@@ -12,8 +12,18 @@ export const generateDOC = async (data: CVData): Promise<Blob> => {
                         text: data.personalInfo.fullName.toUpperCase(),
                         heading: HeadingLevel.TITLE,
                         alignment: AlignmentType.LEFT,
-                        spacing: { after: 100 },
+                        spacing: { after: 200 },
                     }),
+                    ...(data.personalInfo.professionalTitle
+                        ? [
+                            new Paragraph({
+                                text: data.personalInfo.professionalTitle.toUpperCase(),
+                                heading: HeadingLevel.HEADING_2,
+                                alignment: AlignmentType.LEFT,
+                                spacing: { after: 100 },
+                            }),
+                        ]
+                        : []),
                     new Paragraph({
                         alignment: AlignmentType.LEFT,
                         children: [

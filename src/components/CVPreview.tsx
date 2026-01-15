@@ -34,6 +34,8 @@ export default function CVPreview({ data }: CVPreviewProps) {
                 return <SideHeaderLayout data={data} template={template} />;
             case "timeline-sidebar":
                 return <TimelineSidebarLayout data={data} template={template} />;
+            case "minimalist":
+                return <MinimalistLayout data={data} template={template} />;
             case "standard":
             default:
                 return <StandardLayout data={data} template={template} />;
@@ -233,6 +235,34 @@ const SideHeaderLayout = ({ data, template }: { data: CVData; template: Template
                 </div>
             )}
 
+            {data.courses && data.courses.length > 0 && (
+                <section>
+                    <h2 className="text-xl font-bold uppercase text-blue-900 border-b border-gray-300 pb-2 mb-4" style={{ color: template.colors.primary }}>
+                        Courses
+                    </h2>
+                    <div className="space-y-4">
+                        {data.courses.map((course) => (
+                            <div key={course.id} className="flex gap-4">
+                                <div className="w-24 flex-shrink-0 text-sm font-semibold text-gray-600 pt-1">
+                                    {course.startDate} - <br /> {course.endDate}
+                                </div>
+                                <div className="flex-grow">
+                                    <h3 className="font-bold text-lg text-gray-900">
+                                        {course.name}
+                                        {course.link && (
+                                            <a href={course.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-sm text-blue-600 hover:underline font-normal">
+                                                Cert
+                                            </a>
+                                        )}
+                                    </h3>
+                                    <div className="text-sm text-gray-700">{course.institution}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
             {data.projects && data.projects.length > 0 && (
                 <div className="grid grid-cols-12 gap-4">
                     <div className="col-span-3">
@@ -311,6 +341,178 @@ const SideHeaderLayout = ({ data, template }: { data: CVData; template: Template
         </div>
     </div>
 );
+
+const MinimalistLayout = ({ data, template }: { data: CVData; template: Template }) => {
+    const hasSkills = data.hardSkills?.length > 0 || data.softSkills?.length > 0 || data.skills?.length > 0;
+
+    return (
+        <div className="p-12 max-w-[210mm] mx-auto bg-white text-black font-sans leading-relaxed shadow-sm">
+            {/* Header */}
+            <header className="mb-8 border-b-4 border-black pb-6">
+                <h1 className="text-5xl font-bold uppercase mb-3 tracking-wide text-black">
+                    {data.personalInfo.fullName || "Your Name"}
+                </h1>
+                {data.personalInfo.professionalTitle && (
+                    <p className="text-2xl font-medium mb-4 text-gray-800">
+                        {data.personalInfo.professionalTitle}
+                    </p>
+                )}
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-gray-700">
+                    {data.personalInfo.email && <span>{data.personalInfo.email}</span>}
+                    {data.personalInfo.phone && <span>{data.personalInfo.phone}</span>}
+                    {data.personalInfo.linkedin && (
+                        <span>
+                            <a href={data.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="hover:underline text-black">
+                                LinkedIn
+                            </a>
+                        </span>
+                    )}
+                    {data.personalInfo.website && (
+                        <span>
+                            <a href={data.personalInfo.website} target="_blank" rel="noopener noreferrer" className="hover:underline text-black">
+                                Website
+                            </a>
+                        </span>
+                    )}
+                </div>
+            </header>
+
+            <div className="space-y-8">
+                {/* Skills */}
+                {hasSkills && (
+                    <section>
+                        <h2 className="text-lg font-bold uppercase border-b border-black mb-4 pb-1 tracking-widest">Technical Skills</h2>
+                        <div className="text-sm space-y-2">
+                            {data.hardSkills && data.hardSkills.length > 0 && (
+                                <div className="grid grid-cols-12">
+                                    <div className="col-span-12 md:col-span-3 font-bold">Hard Skills:</div>
+                                    <div className="col-span-12 md:col-span-9">{data.hardSkills.join(", ")}</div>
+                                </div>
+                            )}
+                            {data.softSkills && data.softSkills.length > 0 && (
+                                <div className="grid grid-cols-12">
+                                    <div className="col-span-12 md:col-span-3 font-bold">Soft Skills:</div>
+                                    <div className="col-span-12 md:col-span-9">{data.softSkills.join(", ")}</div>
+                                </div>
+                            )}
+                            {data.skills && data.skills.length > 0 && (
+                                <div className="grid grid-cols-12">
+                                    <div className="col-span-12 md:col-span-3 font-bold">Other Skills:</div>
+                                    <div className="col-span-12 md:col-span-9">{data.skills.join(", ")}</div>
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                )}
+
+                {/* Projects */}
+                {data.projects && data.projects.length > 0 && (
+                    <section>
+                        <h2 className="text-lg font-bold uppercase border-b border-black mb-4 pb-1 tracking-widest">Projects</h2>
+                        <div className="space-y-6">
+                            {data.projects.map((project) => (
+                                <div key={project.id}>
+                                    <div className="flex justify-between items-baseline mb-2">
+                                        <div className="font-bold text-base">
+                                            {project.name}
+                                            {project.link && (
+                                                <a href={project.link} target="_blank" rel="noopener noreferrer" className="ml-2 font-normal text-blue-600 hover:underline text-sm">
+                                                    | Link
+                                                </a>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <ul className="list-disc list-inside text-sm pl-2 space-y-1 text-gray-800">
+                                        {project.description.split('\n').map((line, i) => (
+                                            line.trim() && <li key={i}>{line.trim()}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* Experience */}
+                {data.experience.length > 0 && (
+                    <section>
+                        <h2 className="text-lg font-bold uppercase border-b border-black mb-4 pb-1 tracking-widest">Experience</h2>
+                        <div className="space-y-6">
+                            {data.experience.map((exp) => (
+                                <div key={exp.id}>
+                                    <div className="flex justify-between items-baseline mb-1">
+                                        <div className="font-bold text-base">
+                                            {exp.company}, <span className="font-medium italic text-gray-700">{exp.position}</span>
+                                        </div>
+                                        <div className="text-sm font-semibold whitespace-nowrap ml-4">
+                                            {exp.startDate} - {exp.endDate || "Present"}
+                                        </div>
+                                    </div>
+                                    <ul className="list-disc list-inside text-sm pl-2 space-y-1 text-gray-800">
+                                        {exp.description.split('\n').map((line, i) => (
+                                            line.trim() && <li key={i}>{line.trim()}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* Education */}
+                {data.education.length > 0 && (
+                    <section>
+                        <h2 className="text-lg font-bold uppercase border-b border-black mb-4 pb-1 tracking-widest">Education</h2>
+                        <div className="space-y-4">
+                            {data.education.map((edu) => (
+                                <div key={edu.id}>
+                                    <div className="flex justify-between items-baseline">
+                                        <div className="font-bold text-base">
+                                            {edu.school}
+                                        </div>
+                                        <div className="text-sm font-semibold whitespace-nowrap ml-4">
+                                            {edu.startDate} - {edu.endDate || "Present"}
+                                        </div>
+                                    </div>
+                                    <div className="text-sm italic text-gray-700">{edu.degree}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* Courses */}
+                {data.courses && data.courses.length > 0 && (
+                    <section>
+                        <h2 className="text-lg font-bold uppercase border-b border-black mb-4 pb-1 tracking-widest">Courses & Certifications</h2>
+                        <div className="space-y-4">
+                            {data.courses.map((course) => (
+                                <div key={course.id}>
+                                    <div className="flex justify-between items-baseline">
+                                        <div className="font-bold text-base">
+                                            {course.name}
+                                        </div>
+                                        <div className="text-sm font-semibold whitespace-nowrap ml-4">
+                                            {course.startDate} - {course.endDate}
+                                        </div>
+                                    </div>
+                                    <div className="text-sm italic text-gray-700">
+                                        {course.institution}
+                                        {course.link && (
+                                            <a href={course.link} target="_blank" rel="noopener noreferrer" className="ml-2 font-normal text-blue-600 hover:underline">
+                                                (Link)
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+            </div>
+        </div>
+    );
+};
 
 // --- Shared Sections ---
 
@@ -646,6 +848,34 @@ const TimelineSidebarLayout = ({ data, template }: { data: CVData; template: Tem
                                         )}
                                     </h3>
                                     <p className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{project.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {data.courses && data.courses.length > 0 && (
+                <section>
+                    <h2 className="text-xl font-bold uppercase text-blue-900 border-b border-gray-300 pb-2 mb-4" style={{ color: template.colors.primary }}>
+                        Courses
+                    </h2>
+                    <div className="space-y-4">
+                        {data.courses.map((course) => (
+                            <div key={course.id} className="flex gap-4">
+                                <div className="w-24 flex-shrink-0 text-sm font-semibold text-gray-600 pt-1">
+                                    {course.startDate} - <br /> {course.endDate}
+                                </div>
+                                <div className="flex-grow">
+                                    <h3 className="font-bold text-lg text-gray-900">
+                                        {course.name}
+                                        {course.link && (
+                                            <a href={course.link} target="_blank" rel="noopener noreferrer" className="ml-2 text-sm text-blue-600 hover:underline font-normal">
+                                                Cert
+                                            </a>
+                                        )}
+                                    </h3>
+                                    <div className="text-sm text-gray-700">{course.institution}</div>
                                 </div>
                             </div>
                         ))}

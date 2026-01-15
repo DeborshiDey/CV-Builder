@@ -1,5 +1,5 @@
-export type TemplateId = "executive" | "modern" | "classic" | "side-header" | "sidebar" | "navy";
-export type TemplateLayout = "standard" | "sidebar" | "left-header" | "timeline-sidebar";
+export type TemplateId = "executive" | "modern" | "classic" | "side-header" | "sidebar" | "navy" | "minimalist";
+export type TemplateLayout = "standard" | "sidebar" | "left-header" | "timeline-sidebar" | "minimalist";
 
 export interface Template {
     id: TemplateId;
@@ -18,6 +18,20 @@ export interface Template {
 }
 
 export const templates: Template[] = [
+    {
+        id: "minimalist",
+        name: "Minimalist",
+        description: "Clean, single-column design with bold headers",
+        layout: "minimalist",
+        colors: {
+            primary: "#000000",
+            secondary: "#374151",
+            text: "#000000",
+            background: "#ffffff",
+            headerBackground: "#ffffff",
+            headerText: "#000000",
+        },
+    },
     {
         id: "executive",
         name: "Executive",

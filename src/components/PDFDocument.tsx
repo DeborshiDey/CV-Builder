@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
         textTransform: "uppercase",
-        marginBottom: 10,
+        marginBottom: 20,
     },
     title: {
         fontSize: 14,
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
         textTransform: "uppercase",
-        marginBottom: 5,
+        marginBottom: 15,
         color: "white",
     },
     sidebarTitle: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     timelineName: {
         fontSize: 28,
         fontWeight: "bold",
-        marginBottom: 5,
+        marginBottom: 15,
         color: "white",
         lineHeight: 1.1,
     },
@@ -260,6 +260,75 @@ const styles = StyleSheet.create({
         width: "75%", // Default width
         borderRadius: 2,
     },
+
+    // Minimalist Layout Styles
+    minimalistPage: {
+        padding: 40,
+        fontFamily: "Helvetica",
+    },
+    minimalistHeader: {
+        marginBottom: 25,
+        borderBottomWidth: 2.5,
+        borderBottomColor: "#000",
+        paddingBottom: 15,
+    },
+    minimalistName: {
+        fontSize: 32,
+        fontWeight: "bold",
+        textTransform: "uppercase",
+        marginBottom: 8,
+    },
+    minimalistTitle: {
+        fontSize: 14,
+        marginBottom: 10,
+        color: "#333",
+    },
+    minimalistContact: {
+        fontSize: 10,
+        flexDirection: "row",
+        flexWrap: "wrap",
+        gap: 15,
+        color: "#444",
+        fontWeight: "medium",
+    },
+    minimalistSectionTitle: {
+        fontSize: 12,
+        fontWeight: "bold",
+        textTransform: "uppercase",
+        borderBottomWidth: 1.5,
+        borderBottomColor: "#000",
+        marginBottom: 12,
+        paddingBottom: 4,
+        marginTop: 18,
+        letterSpacing: 1,
+    },
+    minimalistRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 4,
+        alignItems: "flex-end",
+    },
+    minimalistPosition: {
+        fontSize: 11,
+        fontWeight: "bold",
+    },
+    minimalistDate: {
+        fontSize: 10,
+        fontWeight: "bold",
+    },
+    minimalistCompany: {
+        fontSize: 10,
+        fontStyle: "italic",
+        marginBottom: 4,
+    },
+    minimalistList: {
+        marginLeft: 10,
+    },
+    minimalistListItem: {
+        fontSize: 10,
+        marginBottom: 2,
+        lineHeight: 1.4,
+    },
 });
 
 interface PDFDocumentProps {
@@ -277,6 +346,8 @@ export default function PDFDocument({ data }: PDFDocumentProps) {
                 return <SideHeaderLayout data={data} template={template} />;
             case "timeline-sidebar":
                 return <TimelineSidebarLayout data={data} template={template} />;
+            case "minimalist":
+                return <MinimalistLayout data={data} template={template} />;
             case "standard":
             default:
                 return <StandardLayout data={data} template={template} />;
@@ -329,6 +400,8 @@ const StandardLayout = ({ data, template }: { data: CVData; template: Template }
                 <SummarySection data={data} titleStyle={dynamicStyles.sectionTitle} />
                 <ExperienceSection data={data} titleStyle={dynamicStyles.sectionTitle} />
                 <EducationSection data={data} titleStyle={dynamicStyles.sectionTitle} />
+                <ProjectsSection data={data} titleStyle={dynamicStyles.sectionTitle} />
+                <CoursesSection data={data} titleStyle={dynamicStyles.sectionTitle} />
                 <SkillsSection data={data} titleStyle={dynamicStyles.sectionTitle} />
             </View>
         </View>
@@ -376,6 +449,8 @@ const SidebarLayout = ({ data, template }: { data: CVData; template: Template })
                 <SummarySection data={data} titleStyle={dynamicStyles.sectionTitle} />
                 <ExperienceSection data={data} titleStyle={dynamicStyles.sectionTitle} />
                 <EducationSection data={data} titleStyle={dynamicStyles.sectionTitle} />
+                <ProjectsSection data={data} titleStyle={dynamicStyles.sectionTitle} />
+                <CoursesSection data={data} titleStyle={dynamicStyles.sectionTitle} />
             </View>
         </View>
     );
@@ -450,6 +525,51 @@ const SideHeaderLayout = ({ data, template }: { data: CVData; template: Template
                                         </Text>
                                     </View>
                                     <Text>{edu.degree}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    </View>
+                )}
+
+                {data.projects && data.projects.length > 0 && (
+                    <View style={styles.sideHeaderRow}>
+                        <View style={styles.sideHeaderLeft}>
+                            <Text style={[styles.sideHeaderTitle, dynamicStyles.sectionTitle]}>Projects</Text>
+                        </View>
+                        <View style={styles.sideHeaderRight}>
+                            {data.projects.map((project) => (
+                                <View key={project.id} style={{ marginBottom: 10 }}>
+                                    <View style={styles.row}>
+                                        <Text style={styles.bold}>{project.name}</Text>
+                                        {project.link && (
+                                            <Text style={{ fontSize: 9, color: "blue" }}>{project.link}</Text>
+                                        )}
+                                    </View>
+                                    <Text style={styles.description}>{project.description}</Text>
+                                </View>
+                            ))}
+                        </View>
+                    </View>
+                )}
+
+                {data.courses && data.courses.length > 0 && (
+                    <View style={styles.sideHeaderRow}>
+                        <View style={styles.sideHeaderLeft}>
+                            <Text style={[styles.sideHeaderTitle, dynamicStyles.sectionTitle]}>Courses</Text>
+                        </View>
+                        <View style={styles.sideHeaderRight}>
+                            {data.courses.map((course) => (
+                                <View key={course.id} style={{ marginBottom: 8 }}>
+                                    <View style={styles.row}>
+                                        <Text style={styles.bold}>{course.name}</Text>
+                                        <Text style={styles.date}>
+                                            {course.startDate} - {course.endDate}
+                                        </Text>
+                                    </View>
+                                    <Text style={{ fontSize: 9, fontStyle: "italic" }}>{course.institution}</Text>
+                                    {course.link && (
+                                        <Text style={{ fontSize: 9, color: "blue" }}>{course.link}</Text>
+                                    )}
                                 </View>
                             ))}
                         </View>
@@ -586,6 +706,182 @@ const TimelineSidebarLayout = ({ data, template }: { data: CVData; template: Tem
                         ))}
                     </View>
                 )}
+
+                {data.projects && data.projects.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={[styles.timelineRightSectionTitle, dynamicStyles.sectionTitle]}>Projects</Text>
+                        {data.projects.map((project) => (
+                            <View key={project.id} style={{ marginBottom: 10 }}>
+                                <View style={styles.row}>
+                                    <Text style={styles.bold}>{project.name}</Text>
+                                    {project.link && (
+                                        <Text style={{ fontSize: 9, color: "blue" }}>{project.link}</Text>
+                                    )}
+                                </View>
+                                <Text style={styles.description}>{project.description}</Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                {data.courses && data.courses.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={[styles.timelineRightSectionTitle, dynamicStyles.sectionTitle]}>Courses</Text>
+                        {data.courses.map((course) => (
+                            <View key={course.id} style={styles.timelineRow}>
+                                <View style={styles.timelineDateCol}>
+                                    <Text style={styles.timelineDate}>
+                                        {course.startDate} -
+                                    </Text>
+                                    <Text style={styles.timelineDate}>
+                                        {course.endDate}
+                                    </Text>
+                                </View>
+                                <View style={styles.timelineContentCol}>
+                                    <Text style={styles.timelinePosition}>{course.name}</Text>
+                                    <Text style={styles.timelineCompany}>{course.institution}</Text>
+                                    {course.link && (
+                                        <Text style={{ fontSize: 9, color: "blue" }}>{course.link}</Text>
+                                    )}
+                                </View>
+                            </View>
+                        ))}
+                    </View>
+                )}
+            </View>
+        </View>
+    );
+};
+
+const MinimalistLayout = ({ data, template }: { data: CVData; template: Template }) => {
+    return (
+        <View style={styles.minimalistPage}>
+            {/* Header */}
+            <View style={styles.minimalistHeader}>
+                <Text style={styles.minimalistName}>{data.personalInfo.fullName}</Text>
+                {data.personalInfo.professionalTitle && (
+                    <Text style={styles.minimalistTitle}>{data.personalInfo.professionalTitle}</Text>
+                )}
+                <View style={styles.minimalistContact}>
+                    {data.personalInfo.email && <Text>{data.personalInfo.email}</Text>}
+                    {data.personalInfo.phone && <Text>{data.personalInfo.phone}</Text>}
+                    {data.personalInfo.linkedin && <Text>{data.personalInfo.linkedin}</Text>}
+                    {data.personalInfo.website && <Text>{data.personalInfo.website}</Text>}
+                </View>
+            </View>
+
+            {/* Content */}
+            <View>
+                {/* Skills */}
+                {(data.hardSkills?.length > 0 || data.softSkills?.length > 0 || data.skills?.length > 0) && (
+                    <View style={styles.section}>
+                        <Text style={styles.minimalistSectionTitle}>Technical Skills</Text>
+                        {data.hardSkills && data.hardSkills.length > 0 && (
+                            <View style={styles.minimalistRow}>
+                                <Text style={{ width: "25%", fontWeight: "bold", fontSize: 10 }}>Hard Skills:</Text>
+                                <Text style={{ width: "75%", fontSize: 10 }}>{data.hardSkills.join(", ")}</Text>
+                            </View>
+                        )}
+                        {data.softSkills && data.softSkills.length > 0 && (
+                            <View style={styles.minimalistRow}>
+                                <Text style={{ width: "25%", fontWeight: "bold", fontSize: 10 }}>Soft Skills:</Text>
+                                <Text style={{ width: "75%", fontSize: 10 }}>{data.softSkills.join(", ")}</Text>
+                            </View>
+                        )}
+                        {data.skills && data.skills.length > 0 && (
+                            <View style={styles.minimalistRow}>
+                                <Text style={{ width: "25%", fontWeight: "bold", fontSize: 10 }}>Other Skills:</Text>
+                                <Text style={{ width: "75%", fontSize: 10 }}>{data.skills.join(", ")}</Text>
+                            </View>
+                        )}
+                    </View>
+                )}
+
+                {/* Projects */}
+                {data.projects && data.projects.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.minimalistSectionTitle}>Projects</Text>
+                        {data.projects.map((project) => (
+                            <View key={project.id} style={{ marginBottom: 10 }}>
+                                <View style={styles.minimalistRow}>
+                                    <Text style={styles.minimalistPosition}>{project.name}</Text>
+                                    {project.link && (
+                                        <Text style={{ fontSize: 9, color: "blue" }}>{project.link}</Text>
+                                    )}
+                                </View>
+                                <View style={styles.minimalistList}>
+                                    {project.description.split('\n').map((line, i) => (
+                                        line.trim() && <Text key={i} style={styles.minimalistListItem}>• {line.trim()}</Text>
+                                    ))}
+                                </View>
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                {/* Experience */}
+                {data.experience.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.minimalistSectionTitle}>Experience</Text>
+                        {data.experience.map((exp) => (
+                            <View key={exp.id} style={{ marginBottom: 10 }}>
+                                <View style={styles.minimalistRow}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={styles.minimalistPosition}>{exp.company}, </Text>
+                                        <Text style={[styles.minimalistCompany, { marginBottom: 0 }]}>{exp.position}</Text>
+                                    </View>
+                                    <Text style={styles.minimalistDate}>
+                                        {exp.startDate} - {exp.endDate || "Present"}
+                                    </Text>
+                                </View>
+                                <View style={styles.minimalistList}>
+                                    {exp.description.split('\n').map((line, i) => (
+                                        line.trim() && <Text key={i} style={styles.minimalistListItem}>• {line.trim()}</Text>
+                                    ))}
+                                </View>
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                {/* Education */}
+                {data.education.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.minimalistSectionTitle}>Education</Text>
+                        {data.education.map((edu) => (
+                            <View key={edu.id} style={{ marginBottom: 8 }}>
+                                <View style={styles.minimalistRow}>
+                                    <Text style={styles.minimalistPosition}>{edu.school}</Text>
+                                    <Text style={styles.minimalistDate}>
+                                        {edu.startDate} - {edu.endDate || "Present"}
+                                    </Text>
+                                </View>
+                                <Text style={{ fontSize: 10, fontStyle: "italic" }}>{edu.degree}</Text>
+                            </View>
+                        ))}
+                    </View>
+                )}
+
+                {/* Courses */}
+                {data.courses && data.courses.length > 0 && (
+                    <View style={styles.section}>
+                        <Text style={styles.minimalistSectionTitle}>Courses & Certifications</Text>
+                        {data.courses.map((course) => (
+                            <View key={course.id} style={{ marginBottom: 8 }}>
+                                <View style={styles.minimalistRow}>
+                                    <Text style={styles.minimalistPosition}>{course.name}</Text>
+                                    <Text style={styles.minimalistDate}>
+                                        {course.startDate} - {course.endDate}
+                                    </Text>
+                                </View>
+                                <Text style={{ fontSize: 10, fontStyle: "italic" }}>{course.institution}</Text>
+                                {course.link && (
+                                    <Text style={{ fontSize: 9, color: "blue" }}>{course.link}</Text>
+                                )}
+                            </View>
+                        ))}
+                    </View>
+                )}
             </View>
         </View>
     );
@@ -688,6 +984,49 @@ const SkillsSection = ({ data, titleStyle }: { data: CVData; titleStyle: any }) 
                     ))}
                 </View>
             )}
+        </View>
+    );
+};
+
+const ProjectsSection = ({ data, titleStyle }: { data: CVData; titleStyle: any }) => {
+    if (!data.projects || data.projects.length === 0) return null;
+    return (
+        <View style={styles.section}>
+            <Text style={[styles.sectionTitle, titleStyle]}>Projects</Text>
+            {data.projects.map((project) => (
+                <View key={project.id} style={{ marginBottom: 10 }}>
+                    <View style={styles.row}>
+                        <Text style={styles.bold}>{project.name}</Text>
+                        {project.link && (
+                            <Text style={{ fontSize: 9, color: "blue" }}>{project.link}</Text>
+                        )}
+                    </View>
+                    <Text style={styles.description}>{project.description}</Text>
+                </View>
+            ))}
+        </View>
+    );
+};
+
+const CoursesSection = ({ data, titleStyle }: { data: CVData; titleStyle: any }) => {
+    if (!data.courses || data.courses.length === 0) return null;
+    return (
+        <View style={styles.section}>
+            <Text style={[styles.sectionTitle, titleStyle]}>Courses</Text>
+            {data.courses.map((course) => (
+                <View key={course.id} style={{ marginBottom: 8 }}>
+                    <View style={styles.row}>
+                        <Text style={styles.bold}>{course.name}</Text>
+                        <Text style={styles.date}>
+                            {course.startDate} - {course.endDate}
+                        </Text>
+                    </View>
+                    <Text style={{ fontSize: 9, fontStyle: "italic" }}>{course.institution}</Text>
+                    {course.link && (
+                        <Text style={{ fontSize: 9, color: "blue" }}>{course.link}</Text>
+                    )}
+                </View>
+            ))}
         </View>
     );
 };
