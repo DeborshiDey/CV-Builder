@@ -2,7 +2,24 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require('fs');
 
 async function testGemini() {
-    const apiKey = "AIzaSyBTbA5v1fekuqwVH46kTUzfRSpSfBEk740";
+    // Load API key from .env.local manually since dotenv is not installed
+    let apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        try {
+            const envFile = fs.readFileSync('.env.local', 'utf8');
+            const match = envFile.match(/GEMINI_API_KEY=(.*)/);
+            if (match) {
+                apiKey = match[1].trim();
+            }
+        } catch (e) {
+            // Ignore error if file doesn't exist
+        }
+    }
+
+    if (!apiKey) {
+        console.error("Error: GEMINI_API_KEY not found in environment or .env.local");
+        process.exit(1);
+    }
 
     console.log("Testing Gemini API with gemini-2.0-flash...");
 
