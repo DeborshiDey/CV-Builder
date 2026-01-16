@@ -4,7 +4,7 @@ import { motion, useAnimation, type Variants } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-const ease = [0.16, 1, 0.3, 1];
+const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 interface HeroBadgeProps {
     href?: string;
@@ -46,9 +46,6 @@ export default function HeroBadge({
 }: HeroBadgeProps) {
     const controls = useAnimation();
 
-    const BadgeWrapper = href ? Link : motion.button;
-    const wrapperProps = href ? { href } : { onClick };
-
     const baseClassName = cn(
         "inline-flex items-center rounded-full border transition-colors",
         badgeVariants[variant],
@@ -56,35 +53,44 @@ export default function HeroBadge({
         className
     );
 
-    return (
-        <BadgeWrapper
-            {...wrapperProps}
-            className={cn("group", href && "cursor-pointer")}
+    const content = (
+        <motion.div
+            className={baseClassName}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease }}
+            onHoverStart={() => controls.start("hover")}
+            onHoverEnd={() => controls.start("initial")}
         >
-            <motion.div
-                className={baseClassName}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease }}
-                onHoverStart={() => controls.start("hover")}
-                onHoverEnd={() => controls.start("initial")}
-            >
-                {icon && (
-                    <motion.div
-                        className="text-foreground/60 transition-colors group-hover:text-primary"
-                        variants={iconAnimationVariants}
-                        initial="initial"
-                        animate={controls}
-                        transition={{ type: "spring", stiffness: 300, damping: 10 }}
-                    >
-                        {icon}
-                    </motion.div>
-                )}
-                <span>{text}</span>
-                {endIcon && (
-                    <motion.div className="text-foreground/60">{endIcon}</motion.div>
-                )}
-            </motion.div>
-        </BadgeWrapper>
+            {icon && (
+                <motion.div
+                    className="text-foreground/60 transition-colors group-hover:text-primary"
+                    variants={iconAnimationVariants}
+                    initial="initial"
+                    animate={controls}
+                    transition={{ type: "spring", stiffness: 300, damping: 10 }}
+                >
+                    {icon}
+                </motion.div>
+            )}
+            <span>{text}</span>
+            {endIcon && (
+                <motion.div className="text-foreground/60">{endIcon}</motion.div>
+            )}
+        </motion.div>
+    );
+
+    if (href) {
+        return (
+            <Link href={href} className="group cursor-pointer">
+                {content}
+            </Link>
+        );
+    }
+
+    return (
+        <motion.button onClick={onClick} className="group">
+            {content}
+        </motion.button>
     );
 }
